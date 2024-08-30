@@ -1,7 +1,7 @@
 package pages;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -10,13 +10,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
+import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
 public class YaMarketMainPage {
 
@@ -26,6 +24,8 @@ public class YaMarketMainPage {
 
     private Actions actions;
 
+    private JavascriptExecutor js;
+
     private static final By LOCATOR_CATALOG_BUTTON = By
             .xpath("//div[@data-zone-name='catalog']/button");
 
@@ -34,24 +34,33 @@ public class YaMarketMainPage {
 
     public YaMarketMainPage(WebDriver driver) {
         this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(30));
         this.actions = new Actions(driver);
+        this.js = (JavascriptExecutor) driver;
     }
 
     public void chooseCatalogItem(String titleCatalogItem) {
-        wait.until(presenceOfElementLocated(LOCATOR_CATALOG_BUTTON));
+        wait.until(presenceOfElementLocated(By.xpath("//body/script[@type]")));
         driver.findElement(LOCATOR_CATALOG_BUTTON).click();
 
+//        try {
+//            Thread.sleep(3000);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
         wait.until(presenceOfElementLocated(LOCATOR_CATALOG_ITEMS));
         List<WebElement> catalogItems = driver.findElements(LOCATOR_CATALOG_ITEMS);
-        System.out.println(catalogItems.size());
         catalogItems.stream()
                 .filter(item -> item.getText().equals(titleCatalogItem))
                 .findFirst()
                 .ifPresentOrElse(
-                        webElement -> actions.moveToElement(webElement).pause(Duration.ofSeconds(1)).perform(),
+                        webElement -> {
+//                            js.executeScript("arguments[0].scrollIntoView(true);", webElement);
+                            actions.scrollToElement(webElement).moveToElement(wait.until(visibilityOf(webElement)))
+                                    .pause(Duration.ofSeconds(5)).perform();
+                        },
 //                        WebElement::click,
-                        () -> fail(titleCatalogItem + " отсутствует в каталоге")
+                        () -> fail(titleCatalogItem + " отсутствует в заголовках каталога")
                 );
 
 //        Thread.sleep(3000);
@@ -65,39 +74,35 @@ public class YaMarketMainPage {
         List<WebElement> categories = driver.findElements(By
                 .xpath("//div[@data-auto='category']"));
 
+        AtomicBoolean isClick = new AtomicBoolean(false);
         categories.stream()
                 .map(webElement -> webElement.findElement(By
                         .xpath(".//div[@role='heading']//a")))
                 .filter(titleSubitem -> titleSubitem.getText().equals(titleCatalogSubitem))
                 .findFirst()
-                .ifPresent(WebElement::click);
+                .ifPresent(webElement -> {
+                    webElement.click();
+                    isClick.set(true);
+                });
 
-//        categories.stream()
-//                .map(webElement -> webElement.findElement(By
-//                        .xpath(".//span[text()='Ещё']")))
-//                .forEach(WebElement::click);
+        if (!isClick.get()) {
+            categories.stream()
+                    .map(webElement -> webElement.findElements(By
+                            .xpath(".//span[text()='Ещё']")))
+                    .flatMap(Collection::stream)
+                    .forEach(WebElement::click);
 
-        categories.stream()
-                .map(webElement -> webElement.findElements(By
-                        .xpath(".//span[text()='Ещё']")))
-                .filter(Predicate.not(List::isEmpty))
-                .flatMap(Collection::stream)
-                .forEach(WebElement::click);
-
-        categories.stream()
-                .flatMap(webElement -> webElement.findElements(By
-                        .xpath(".//span[text()='Ещё']")).stream())
-                .forEach(WebElement::click);
-
-        categories.stream()
-                .flatMap(webElement -> webElement.findElements(By
-                        .xpath(".//ul[@data-autotest-id='subItems']//a")).stream())
-                .filter(subItem -> subItem.getText().equals(titleCatalogSubitem))
-                .findFirst()
-                .ifPresentOrElse(
-                        WebElement::click,
-                        () -> fail(titleCatalogSubitem + " отсутствует в каталоге")
-                );
+            categories.stream()
+                    .map(webElement -> webElement.findElements(By
+                            .xpath(".//ul[@data-autotest-id='subItems']//a")))
+                    .flatMap(Collection::stream)
+                    .filter(subItem -> subItem.getText().equals(titleCatalogSubitem))
+                    .findFirst()
+                    .ifPresentOrElse(
+                            WebElement::click,
+                            () -> fail(titleCatalogSubitem + " отсутствует в подпунктах каталога")
+                    );
+        }
     }
 
 
