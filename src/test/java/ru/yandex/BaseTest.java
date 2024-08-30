@@ -4,8 +4,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import static helpers.CustomWait.implicitlyWait;
 import static helpers.Properties.testsProperties;
@@ -16,9 +16,9 @@ public class BaseTest {
 
     @BeforeEach
     public void setUp() {
-        FirefoxOptions driverOptions = new FirefoxOptions();
+        ChromeOptions driverOptions = new ChromeOptions();
         driverOptions.setPageLoadStrategy(PageLoadStrategy.NORMAL);
-        driver = new FirefoxDriver(driverOptions);
+        driver = new ChromeDriver(driverOptions);
         driver.manage().window().maximize();
         implicitlyWait(driver, testsProperties.defaultTimeout());
     }
