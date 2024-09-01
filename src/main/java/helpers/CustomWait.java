@@ -36,7 +36,7 @@ public class CustomWait {
 
     private static void sleep(int sec) {
         try {
-            Thread.sleep(sec * 1000);
+            Thread.sleep(sec * 1000L);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -45,7 +45,6 @@ public class CustomWait {
     public static void waitInvisibleIfLocated(WebDriver driver, String elementXpath,
                                               int timeWaitLocated, int timeWaitInvisible) {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(0));
-
         for (int i = 0; i < timeWaitLocated; ++i) {
             if (!driver.findElements(By.xpath(elementXpath)).isEmpty()) {
                 for (int j = 0; ; ++j) {
@@ -56,9 +55,8 @@ public class CustomWait {
                     sleep(1);
                 }
             }
-            sleep(1);
+            sleep(testsProperties.timeSleep());
         }
-
         implicitlyWait(driver, implicitlyWait);
     }
 

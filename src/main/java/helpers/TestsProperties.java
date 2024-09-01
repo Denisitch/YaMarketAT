@@ -13,4 +13,13 @@ public interface TestsProperties extends Config {
 
     @Config.Key("default.timeout")
     int defaultTimeout();
+
+    @Config.Key("time.wait.located")
+    int timeWaitLocated();
+
+    @Config.Key("time.wait.invisible")
+    int timeWaitInvisible();
+
+    @Config.Key("time.wait.for.sleep")
+    int timeSleep();
 }

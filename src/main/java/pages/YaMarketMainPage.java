@@ -18,33 +18,29 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
 public class YaMarketMainPage {
 
-    private WebDriver driver;
+    private final WebDriver driver;
 
-    private WebDriverWait wait;
+    private final WebDriverWait wait;
 
-    private Actions actions;
+    private final Actions actions;
 
-    private JavascriptExecutor js;
+    private static final String CATALOG_BUTTON = "//div[@data-zone-name='catalog']/button";
 
-    private static final By LOCATOR_CATALOG_BUTTON = By
-            .xpath("//div[@data-zone-name='catalog']/button");
-
-    private static final By LOCATOR_CATALOG_ITEMS = By
-            .xpath("//div[@data-zone-name='catalog-content']//ul[@role='tablist']//descendant::span");
+    private static final String CATALOG_ITEMS =
+            "//div[@data-zone-name='catalog-content']//ul[@role='tablist']//descendant::span";
 
     public YaMarketMainPage(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         this.actions = new Actions(driver);
-        this.js = (JavascriptExecutor) driver;
     }
 
     public void chooseCatalogItem(String titleCatalogItem) {
         wait.until(presenceOfElementLocated(By.xpath("//body/script[@type]")));
-        driver.findElement(LOCATOR_CATALOG_BUTTON).click();
+        driver.findElement(By.xpath(CATALOG_BUTTON)).click();
 
-        wait.until(presenceOfElementLocated(LOCATOR_CATALOG_ITEMS));
-        List<WebElement> catalogItems = driver.findElements(LOCATOR_CATALOG_ITEMS);
+        wait.until(presenceOfElementLocated(By.xpath(CATALOG_ITEMS)));
+        List<WebElement> catalogItems = driver.findElements(By.xpath(CATALOG_ITEMS));
         catalogItems.stream()
                 .filter(item -> item.getText().equals(titleCatalogItem))
                 .findFirst()
