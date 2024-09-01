@@ -4,57 +4,37 @@ import dto.Product;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.junit.jupiter.params.provider.MethodSource;
 import pages.YaMarketMainPage;
 import pages.YaMarketSubtitlePage;
 
-import java.time.Duration;
 import java.util.Objects;
 
 import static helpers.Properties.testsProperties;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
 public class YaMarketTest extends BaseTest {
 
     @Feature("Проверка результатов поиска в YandexMarket")
     @DisplayName("Переход на страничку подпункта каталога")
     @ParameterizedTest(name = "{displayName}: {arguments}")
-    @CsvSource({
-            "Электроника, Ноутбуки"
-//            "Оборудование, Инкубаторы"
-    })
-    public void testPartOne(String titleCatalogItem, String titleCatalogSubitem) {
+    @MethodSource("helpers.DataProvider#dataProvider")
+    public void testYM(
+            String titleCatalogItem, String titleCatalogSubitem,
+            String titleFiltersRange, String minPrice, String maxPrice,
+            String titleFiltersCheckbox, String titleSubfiltersFirst,
+            String titleSubfiltersSecond, Integer countRes
+    ) {
         driver.get(testsProperties.yandexMarketUrl());
         YaMarketMainPage yaMarketMainPage = new YaMarketMainPage(driver);
         yaMarketMainPage.chooseCatalogItem(titleCatalogItem);
         yaMarketMainPage.chooseCatalogSubitem(titleCatalogSubitem);
         assertTrue(Objects.requireNonNull(driver.getTitle()).contains(titleCatalogSubitem),
                 "Тайтл " + driver.getTitle() + " на сайте не содержит " + titleCatalogSubitem);
-    }
-
-    @Feature("Проверка результатов поиска в YandexMarket")
-    @DisplayName("Поиск по заданным параметрам")
-    @ParameterizedTest(name = "{displayName}: {arguments}")
-    @CsvSource({
-            "Ноутбуки, 10000, 30000, Производитель, HP, Lenovo, 12"
-    })
-    public void testPartTwo(String titleCatalogSubitem,
-                            String minPrice, String maxPrice,
-                            String titleFilters, String titleSubfiltersFirst,
-                            String titleSubfiltersSecond,
-                            Integer countRes) {
-        driver.get("https://market.yandex.ru/catalog--noutbuki/26895412/");
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        wait.until(presenceOfElementLocated(By.xpath("//body/script[@type]")));
-        assertTrue(Objects.requireNonNull(driver.getTitle()).contains(titleCatalogSubitem),
-                "Тайтл " + driver.getTitle() + " на сайте не содержит " + titleCatalogSubitem);
 
         YaMarketSubtitlePage yaMarketSubtitlePage = new YaMarketSubtitlePage(driver);
-        yaMarketSubtitlePage.searchFilters(minPrice, maxPrice, titleFilters, titleSubfiltersFirst,
-                titleSubfiltersSecond);
+        yaMarketSubtitlePage.searchFilters(titleFiltersRange, minPrice, maxPrice, titleFiltersCheckbox,
+                titleSubfiltersFirst, titleSubfiltersSecond); // TODO подумать над разбивкой
 
         int countResultSearch = yaMarketSubtitlePage.getResultSearchFirstPage().size();
         assertTrue(countResultSearch > countRes,

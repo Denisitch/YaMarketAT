@@ -78,7 +78,7 @@ public class YaMarketMainPage {
                 );
     }
 
-    private void expandFieldsMore(List<WebElement> categories) {
+    private void expandFieldsMore(List<WebElement> categories) {  // TODO сделать этот пункт необязательным
         categories.stream()
                 .peek(webElement -> wait.until(visibilityOf(webElement)))
                 .map(webElement -> webElement.findElements(By

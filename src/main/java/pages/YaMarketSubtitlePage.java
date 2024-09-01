@@ -55,16 +55,16 @@ public class YaMarketSubtitlePage {
         this.actions = new Actions(driver);
     }
 
-    public void searchFilters(String minPrice, String maxPrice, String titleFilters,
+    public void searchFilters(String titleFiltersRange, String minPrice, String maxPrice, String titleFiltersCheckbox,
                               String titleSubfiltersFirst, String titleSubfiltersSecond) {
         wait.until(presenceOfElementLocated(By.xpath("//body/script[@type]")));
         driver.findElement(By.xpath("//input[@aria-label='в виде сетки']")).click();
 
-        searchFiltersInputRanges("Цена, ₽", "min", minPrice); // TODO сделать поиск по названию фильтра
+        searchFiltersInputRanges(titleFiltersRange, "min", minPrice);
 
-        searchFiltersInputRanges("Цена, ₽", "max", maxPrice);
+        searchFiltersInputRanges(titleFiltersRange, "max", maxPrice);
 
-        searchFiltersCheckbox(titleFilters, titleSubfiltersFirst, titleSubfiltersSecond);
+        searchFiltersCheckbox(titleFiltersCheckbox, titleSubfiltersFirst, titleSubfiltersSecond);
     }
 
     public List<String> getResultSearchFirstPage() {
@@ -157,4 +157,6 @@ public class YaMarketSubtitlePage {
         waitInvisibleIfLocated(driver, SPINNER_PRELOAD,
                 testsProperties.timeWaitLocated(), testsProperties.timeWaitInvisible());
     }
+
+
 }
