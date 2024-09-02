@@ -87,8 +87,8 @@ public class YaMarketSubtitlePage {
 
         List<String> priceProducts = productsBlock.stream()
                 .map(webElement -> {
-                    wait.until(presenceOfElementLocated(By
-                            .xpath(PRODUCTS + "//div[@data-auto='snippet-price-current']/div")));
+                    actions.moveToElement(wait.until(presenceOfElementLocated(By
+                            .xpath(PRODUCTS + "//div[@data-auto='snippet-price-current']/div"))));  // TODO здесь бывает затык
                     return webElement.findElement(By
                             .xpath(".//div[@data-auto='snippet-price-current']/div"));
                 })

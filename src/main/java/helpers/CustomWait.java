@@ -7,7 +7,6 @@ import org.openqa.selenium.support.ui.FluentWait;
 import java.time.Duration;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.concurrent.TimeUnit;
 
 import static helpers.Properties.testsProperties;
 
@@ -52,7 +51,7 @@ public class CustomWait {
                         break;
                     if (j + 1 == timeWaitInvisible)
                         Assertions.fail("Элемент " + elementXpath + " не исчез за " + timeWaitInvisible + "секунд");
-                    sleep(1);
+                    sleep(testsProperties.timeSleep());
                 }
             }
             sleep(testsProperties.timeSleep());

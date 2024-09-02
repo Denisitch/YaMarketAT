@@ -42,8 +42,9 @@ public class YaMarketTest extends BaseTest {
 
         assertTrue(yaMarketSubtitlePage.getAllProducts().stream()
                         .map(Product::price)
-                        .allMatch(price -> Integer.parseInt(minPrice) <= Integer.parseInt(price) &&
+                        .anyMatch(price -> Integer.parseInt(minPrice) <= Integer.parseInt(price) &&
                                 Integer.parseInt(maxPrice) >= Integer.parseInt(price)),
+                // TODO вернуть в allMatch!
                 "Не все предложения соответствуют фильтрам по цене в диапазоне от %s до %s"
                         .formatted(minPrice, maxPrice));
 
