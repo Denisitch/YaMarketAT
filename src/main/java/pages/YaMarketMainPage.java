@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static helpers.Properties.testsProperties;
-import static org.junit.jupiter.api.Assertions.fail;
+import static helpers.Assertions.fail;
 import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
 public class YaMarketMainPage {

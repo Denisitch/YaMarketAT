@@ -9,13 +9,13 @@ import pages.YaMarketSubtitlePage;
 
 import java.util.Objects;
 
+import static helpers.Assertions.assertTrue;
 import static helpers.Properties.testsProperties;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class YaMarketTest extends BaseTest {
 
     @Feature("Проверка результатов поиска в YandexMarket")
-    @DisplayName("Переход на страничку подпункта каталога")
+    @DisplayName("Переход на страничку подпункта каталога  и поиск ноутбука определенных параметров")
     @ParameterizedTest(name = "{displayName}: {arguments}")
     @MethodSource("helpers.DataProvider#dataProvider")
     public void testYM(
