@@ -1,5 +1,6 @@
 package pages;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -34,6 +35,7 @@ public class YaMarketMainPage {
         this.actions = new Actions(driver);
     }
 
+    @Step("Выбираем категорию {titleCatalogItem} в каталоге товаров")
     public void chooseCatalogItem(String titleCatalogItem) {
         wait.until(presenceOfElementLocated(By.xpath("//body/script[@type]")));
         driver.findElement(By.xpath(CATALOG_BUTTON)).click();
@@ -49,6 +51,7 @@ public class YaMarketMainPage {
                 );
     }
 
+    @Step("Наводим курсор на категорию")
     private void correctCursorHover(WebElement webElement) {
         WebElement elementSubtitle;
         long startTime = System.currentTimeMillis();
@@ -63,6 +66,7 @@ public class YaMarketMainPage {
                 (endTime - startTime) > testsProperties.timeElapsed());
     }
 
+    @Step("Выбираем подкатегорию {titleCatalogSubitem} в каталоге товаров")
     public void chooseCatalogSubitem(String titleCatalogSubitem) {
         List<WebElement> categories = driver.findElements(By
                 .xpath("//div[@data-auto='category']"));
@@ -81,6 +85,7 @@ public class YaMarketMainPage {
         }
     }
 
+    @Step("Ищем подкатегорию {titleCatalogSubitem} в списке подкатегорий")
     private void searchByElements(String titleCatalogSubitem, List<WebElement> categories, AtomicBoolean isClick) {
         categories.stream()
                 .map(webElement -> webElement.findElements(By
@@ -96,6 +101,7 @@ public class YaMarketMainPage {
                 );
     }
 
+    @Step("Открытие скрытых элементов подкатегорий")
     private void expandFieldsMore(List<WebElement> categories) {
         categories.stream()
                 .map(webElement -> {
@@ -106,6 +112,7 @@ public class YaMarketMainPage {
                 .forEach(webElement -> actions.moveToElement(wait.until(visibilityOf(webElement))).click().perform());
     }
 
+    @Step("Ищем подкатегорию {titleCatalogSubitem} в списке названий подкатегорий")
     private static void searchBySubtitle(String titleCatalogSubitem, List<WebElement> categories, AtomicBoolean isClick) {
         categories.stream()
                 .map(webElement -> webElement.findElement(By

@@ -1,6 +1,7 @@
 package pages;
 
 import dto.Product;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -55,11 +56,13 @@ public class YaMarketSubtitlePage {
         this.actions = new Actions(driver);
     }
 
+    @Step("Настраиваем отображение результатов поиска в виде сетки")
     public void displaySettings() {
         wait.until(presenceOfElementLocated(By.xpath("//body/script[@type]")));
         driver.findElement(By.xpath("//input[@aria-label='в виде сетки']")).click();
     }
 
+    @Step("Получаем список товаров с первой страницы по результатам поиска")
     public List<String> getResultSearchFirstPage() {
         List<WebElement> elements = driver.findElements(By
                 .xpath(PRODUCTS + "//span[@data-auto='snippet-title']"));
@@ -68,6 +71,7 @@ public class YaMarketSubtitlePage {
                 .toList();
     }
 
+    @Step("Получаем все продукты")
     public List<Product> getAllProducts() {
         List<String> titleProducts = getTitleProducts();
         List<String> priceProducts = getPriceProducts();
@@ -76,6 +80,7 @@ public class YaMarketSubtitlePage {
         return products;
     }
 
+    @Step("Получаем список с ценами всех продуктов")
     public List<String> getPriceProducts() {
         List<WebElement> elementsPriceProducts = driver.findElements(By
                 .xpath(PRODUCTS + "//div[@data-auto='snippet-price-current']/div"));
@@ -84,6 +89,7 @@ public class YaMarketSubtitlePage {
                 .toList();
     }
 
+    @Step("Получаем список с названиями всех продуктов")
     public List<String> getTitleProducts() {
         List<WebElement> elementsTitleProducts = driver.findElements(By
                 .xpath(PRODUCTS + "//span[@data-auto='snippet-title']"));
@@ -92,23 +98,29 @@ public class YaMarketSubtitlePage {
                 .toList();
     }
 
+    @Step("Получаем названия товаров с первой страницы результатов поиска")
     public List<String> getResultsProductTitle() {
         String firstPositionTitle = getFirstPositionTitle();
+        inputSearchTitle(firstPositionTitle);
+        return getResultSearchFirstPage();
+    }
 
+    @Step("Вводим в поисковое поле название первого с текущей страницы товара: {firstPositionTitle}")
+    private void inputSearchTitle(String firstPositionTitle) {
         WebElement findProducts = driver.findElement(By.xpath(FIND_FIELD));
         findProducts.click();
         findProducts.sendKeys(firstPositionTitle);
         driver.findElement(By.xpath(FIND_BUTTON)).click();
-
-        return getResultSearchFirstPage();
     }
 
+    @Step("Получаем название первого товара по результатам поиска")
     public String getFirstPositionTitle() {
         actions.moveToElement(driver.findElement(By.xpath(PRODUCTS)));
         return driver.findElement(By
                 .xpath(PRODUCTS + "//span[@data-auto='snippet-title']")).getText();
     }
 
+    @Step("Открываем весь список товаров, листая страницу до конца вниз")
     public void scrollToEndPage() {
         while (!driver.findElements(By.xpath(BUTTON_MORE)).isEmpty()) {
             actions.moveToElement(driver.findElement(By.xpath(BUTTON_MORE))).perform();
@@ -117,6 +129,7 @@ public class YaMarketSubtitlePage {
         }
     }
 
+    @Step("Выставляем фильтр {titleFilters} по критерию: {titleSubfilters}")
     private void searchFiltersCheckbox(String titleFilters, String titleSubfilters) {
         WebElement itemBlockFilter = driver.findElement(By.xpath(TITLE_FILTER.formatted("enum", titleFilters)));
 
@@ -133,13 +146,15 @@ public class YaMarketSubtitlePage {
                 testsProperties.timeWaitLocated(), testsProperties.timeWaitInvisible());
     }
 
+    @Step("Выставляем фильтр {titleFilters} по критериям: {titleSubfilters}")
     public void searchFiltersCheckbox(String titleFilters, String... titleSubfilters) {
         Arrays.stream(titleSubfilters).forEach(titleSubfilter -> searchFiltersCheckbox(titleFilters, titleSubfilter));
     }
 
+    @Step("Выставляем фильтр {titleFilters} в диапазоне: {input}")
     public void searchFiltersInputRanges(String titleFilters, String... input) {
         WebElement blockFilter = driver.findElement(By.xpath(TITLE_FILTER.formatted("range", titleFilters)));
-        String[] minOrMax = new String[] {"min", "max"};
+        String[] minOrMax = new String[]{"min", "max"};
         for (int i = 0; i < minOrMax.length; i++) {
             if (!input[i].isEmpty()) {
                 WebElement fieldInput = blockFilter.findElement(By
@@ -152,6 +167,4 @@ public class YaMarketSubtitlePage {
             }
         }
     }
-
-
 }
