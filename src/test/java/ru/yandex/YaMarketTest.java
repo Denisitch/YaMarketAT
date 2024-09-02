@@ -1,6 +1,5 @@
 package ru.yandex;
 
-import dto.Product;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,9 +19,8 @@ public class YaMarketTest extends BaseTest {
     @ParameterizedTest(name = "{displayName}: {arguments}")
     @MethodSource("helpers.DataProvider#dataProvider")
     public void testYM(
-            String titleCatalogItem, String titleCatalogSubitem,
-            String titleFiltersRange, String minPrice, String maxPrice,
-            String titleFiltersCheckbox, String titleSubfiltersFirst,
+            String titleCatalogItem, String titleCatalogSubitem, String titleFiltersRange,
+            String minPrice, String maxPrice, String titleFiltersCheckbox, String titleSubfiltersFirst,
             String titleSubfiltersSecond, Integer countRes
     ) {
         driver.get(testsProperties.yandexMarketUrl());
@@ -33,25 +31,25 @@ public class YaMarketTest extends BaseTest {
                 "Тайтл " + driver.getTitle() + " на сайте не содержит " + titleCatalogSubitem);
 
         YaMarketSubtitlePage yaMarketSubtitlePage = new YaMarketSubtitlePage(driver);
-        yaMarketSubtitlePage.searchFilters(titleFiltersRange, minPrice, maxPrice, titleFiltersCheckbox,
-                titleSubfiltersFirst, titleSubfiltersSecond); // TODO подумать над разбивкой
+        yaMarketSubtitlePage.displaySettings();
+        yaMarketSubtitlePage.searchFiltersInputRanges(titleFiltersRange, minPrice, maxPrice);
+        yaMarketSubtitlePage.searchFiltersCheckbox(titleFiltersCheckbox, titleSubfiltersFirst, titleSubfiltersSecond);
 
         int countResultSearch = yaMarketSubtitlePage.getResultSearchFirstPage().size();
         assertTrue(countResultSearch > countRes,
                 "На первой странице менее %d элементов товаров".formatted(countRes));
 
-        assertTrue(yaMarketSubtitlePage.getAllProducts().stream()
-                        .map(Product::price)
-                        .anyMatch(price -> Integer.parseInt(minPrice) <= Integer.parseInt(price) &&
+        yaMarketSubtitlePage.scrollToEndPage();
+        assertTrue(yaMarketSubtitlePage.getPriceProducts().stream()
+                        .allMatch(price -> Integer.parseInt(minPrice) <= Integer.parseInt(price) &&
                                 Integer.parseInt(maxPrice) >= Integer.parseInt(price)),
-                // TODO вернуть в allMatch!
                 "Не все предложения соответствуют фильтрам по цене в диапазоне от %s до %s"
                         .formatted(minPrice, maxPrice));
 
-        assertTrue(yaMarketSubtitlePage.getAllProducts().stream()
-                        .map(Product::title)
-                        .anyMatch(title -> title.contains(titleSubfiltersFirst) || title.contains(titleSubfiltersSecond)),
-                // TODO вернуть в allMatch!
+        assertTrue(yaMarketSubtitlePage.getTitleProducts().stream()
+                        .anyMatch  // TODO вернуть в allMatch!
+                                (title -> title.contains(titleSubfiltersFirst) ||
+                                title.contains(titleSubfiltersSecond)),
                 "Не все предложения соответствуют фильтрам по производителю %s и %s"
                         .formatted(titleSubfiltersFirst, titleSubfiltersSecond));
 

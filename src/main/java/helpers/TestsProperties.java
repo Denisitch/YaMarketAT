@@ -22,4 +22,7 @@ public interface TestsProperties extends Config {
 
     @Config.Key("time.wait.for.sleep")
     int timeSleep();
+
+    @Config.Key("time.elapsed")
+    long timeElapsed();
 }

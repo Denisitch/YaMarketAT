@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static helpers.Properties.testsProperties;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
@@ -58,7 +59,8 @@ public class YaMarketMainPage {
                     .xpath("//div[@data-auto='category']//ancestor::div[@role='heading']/a"));
             actions.moveToElement(wait.until(visibilityOf(elementSubtitle))).perform();
             endTime = System.currentTimeMillis();
-        } while (!(elementSubtitle.getText()).contains(webElement.getText()) || (endTime - startTime) > 5000L); // TODO убрать в проперти
+        } while (!(elementSubtitle.getText()).contains(webElement.getText()) ||
+                (endTime - startTime) > testsProperties.timeElapsed());
     }
 
     public void chooseCatalogSubitem(String titleCatalogSubitem) {

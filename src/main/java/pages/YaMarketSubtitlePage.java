@@ -55,16 +55,9 @@ public class YaMarketSubtitlePage {
         this.actions = new Actions(driver);
     }
 
-    public void searchFilters(String titleFiltersRange, String minPrice, String maxPrice, String titleFiltersCheckbox,
-                              String titleSubfiltersFirst, String titleSubfiltersSecond) {
+    public void displaySettings() {
         wait.until(presenceOfElementLocated(By.xpath("//body/script[@type]")));
         driver.findElement(By.xpath("//input[@aria-label='в виде сетки']")).click();
-
-        searchFiltersInputRanges(titleFiltersRange, "min", minPrice);
-
-        searchFiltersInputRanges(titleFiltersRange, "max", maxPrice);
-
-        searchFiltersCheckbox(titleFiltersCheckbox, titleSubfiltersFirst, titleSubfiltersSecond);
     }
 
     public List<String> getResultSearchFirstPage() {
@@ -76,29 +69,27 @@ public class YaMarketSubtitlePage {
     }
 
     public List<Product> getAllProducts() {
-        scrollToEndPage();
-        List<WebElement> productsBlock = driver.findElements(By.xpath(PRODUCTS));
+        List<String> titleProducts = getTitleProducts();
+        List<String> priceProducts = getPriceProducts();
+        IntStream.range(0, titleProducts.size())
+                .forEach(i -> products.add(new Product(titleProducts.get(i), priceProducts.get(i))));
+        return products;
+    }
 
-        List<String> titleProducts = productsBlock.stream()
-                .map(webElement -> webElement.findElement(By
-                        .xpath(".//span[@data-auto='snippet-title']")))
-                .map(WebElement::getText)
-                .toList();
-
-        List<String> priceProducts = productsBlock.stream()
-                .map(webElement -> {
-                    actions.moveToElement(wait.until(presenceOfElementLocated(By
-                            .xpath(PRODUCTS + "//div[@data-auto='snippet-price-current']/div"))));  // TODO здесь бывает затык
-                    return webElement.findElement(By
-                            .xpath(".//div[@data-auto='snippet-price-current']/div"));
-                })
+    public List<String> getPriceProducts() {
+        List<WebElement> elementsPriceProducts = driver.findElements(By
+                .xpath(PRODUCTS + "//div[@data-auto='snippet-price-current']/div"));
+        return elementsPriceProducts.stream()
                 .map(webElement -> webElement.getText().replaceAll(" ", ""))
                 .toList();
+    }
 
-        IntStream.range(0, productsBlock.size())
-                .forEach(i -> products.add(new Product(titleProducts.get(i), priceProducts.get(i))));
-
-        return products;
+    public List<String> getTitleProducts() {
+        List<WebElement> elementsTitleProducts = driver.findElements(By
+                .xpath(PRODUCTS + "//span[@data-auto='snippet-title']"));
+        return elementsTitleProducts.stream()
+                .map(WebElement::getText)
+                .toList();
     }
 
     public List<String> getResultsProductTitle() {
@@ -118,7 +109,7 @@ public class YaMarketSubtitlePage {
                 .xpath(PRODUCTS + "//span[@data-auto='snippet-title']")).getText();
     }
 
-    private void scrollToEndPage() {
+    public void scrollToEndPage() {
         while (!driver.findElements(By.xpath(BUTTON_MORE)).isEmpty()) {
             actions.moveToElement(driver.findElement(By.xpath(BUTTON_MORE))).perform();
             waitInvisibleIfLocated(driver, SPINNER_MORE,
@@ -142,20 +133,24 @@ public class YaMarketSubtitlePage {
                 testsProperties.timeWaitLocated(), testsProperties.timeWaitInvisible());
     }
 
-    private void searchFiltersCheckbox(String titleFilters, String ... titleSubfilters) {
+    public void searchFiltersCheckbox(String titleFilters, String... titleSubfilters) {
         Arrays.stream(titleSubfilters).forEach(titleSubfilter -> searchFiltersCheckbox(titleFilters, titleSubfilter));
     }
 
-    private void searchFiltersInputRanges(String titleFilters, String minOrMax, String input) {
+    public void searchFiltersInputRanges(String titleFilters, String... input) {
         WebElement blockFilter = driver.findElement(By.xpath(TITLE_FILTER.formatted("range", titleFilters)));
+        String[] minOrMax = new String[] {"min", "max"};
+        for (int i = 0; i < minOrMax.length; i++) {
+            if (!input[i].isEmpty()) {
+                WebElement fieldInput = blockFilter.findElement(By
+                        .xpath("./ancestor::fieldset//span[@data-auto='filter-range-%s']//input".formatted(minOrMax[i])));
+                fieldInput.click();
+                fieldInput.sendKeys(input[i]);
 
-        WebElement fieldInput = blockFilter.findElement(By
-                .xpath("./ancestor::fieldset//span[@data-auto='filter-range-%s']//input".formatted(minOrMax)));
-        fieldInput.click();
-        fieldInput.sendKeys(input);
-
-        waitInvisibleIfLocated(driver, SPINNER_PRELOAD,
-                testsProperties.timeWaitLocated(), testsProperties.timeWaitInvisible());
+                waitInvisibleIfLocated(driver, SPINNER_PRELOAD,
+                        testsProperties.timeWaitLocated(), testsProperties.timeWaitInvisible());
+            }
+        }
     }
 
 
