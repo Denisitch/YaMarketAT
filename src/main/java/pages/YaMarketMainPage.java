@@ -16,6 +16,10 @@ import static helpers.Properties.testsProperties;
 import static helpers.Assertions.fail;
 import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
+/**
+ * @author Осюшкин Денис
+ * Класс, характеризующий начальную страницу сайта YandexMarket
+ */
 public class YaMarketMainPage {
 
     private final WebDriver driver;
@@ -24,10 +28,23 @@ public class YaMarketMainPage {
 
     private final Actions actions;
 
-    private static final String CATALOG_BUTTON = "//div[@data-zone-name='catalog']/button";
+    /**
+     * Селектор кнопки каталога
+     */
+    private static final String CATALOG_BUTTON =
+            "//div[@data-zone-name='catalog']/button";
 
+    /**
+     * Селектор названий элементов каталога
+     */
     private static final String CATALOG_ITEMS =
             "//div[@data-zone-name='catalog-content']//ul[@role='tablist']//descendant::span";
+
+    /**
+     * Селектор названий подэлементов каталога
+     */
+    private static final String CATALOG_SUBITEMS =
+            "//div[@data-auto='category']//ancestor::div[@role='heading']/a";
 
     public YaMarketMainPage(WebDriver driver) {
         this.driver = driver;
@@ -35,6 +52,11 @@ public class YaMarketMainPage {
         this.actions = new Actions(driver);
     }
 
+    /**
+     * @author Осюшкин Денис
+     * Метод, в котором происходит выбор категории из каталога
+     * @param titleCatalogItem название искомой категории в каталоге
+     */
     @Step("Выбираем категорию {titleCatalogItem} в каталоге товаров")
     public void chooseCatalogItem(String titleCatalogItem) {
         wait.until(presenceOfElementLocated(By.xpath("//body/script[@type]")));
@@ -51,6 +73,11 @@ public class YaMarketMainPage {
                 );
     }
 
+    /**
+     * @author Осюшкин Денис
+     * Метод, в котором происходит наведение на нужную категорию каталога
+     * @param webElement элемент, в подкаталоге которого нужно продолжать поиск
+     */
     @Step("Наводим курсор на категорию")
     private void correctCursorHover(WebElement webElement) {
         WebElement elementSubtitle;
@@ -59,13 +86,18 @@ public class YaMarketMainPage {
         do {
             actions.moveToElement(wait.until(visibilityOf(webElement))).perform();
             elementSubtitle = driver.findElement(By
-                    .xpath("//div[@data-auto='category']//ancestor::div[@role='heading']/a"));
+                    .xpath(CATALOG_SUBITEMS));
             actions.moveToElement(wait.until(visibilityOf(elementSubtitle))).perform();
             endTime = System.currentTimeMillis();
         } while (!(elementSubtitle.getText()).contains(webElement.getText()) ||
                 (endTime - startTime) > testsProperties.timeElapsed());
     }
 
+    /**
+     * @author Осюшкин Денис
+     * Метод, в котором собрана логика поиска искомого раздела в подкаталоге
+     * @param titleCatalogSubitem название искомой подкатегории в каталоге
+     */
     @Step("Выбираем подкатегорию {titleCatalogSubitem} в каталоге товаров")
     public void chooseCatalogSubitem(String titleCatalogSubitem) {
         List<WebElement> categories = driver.findElements(By
@@ -85,6 +117,13 @@ public class YaMarketMainPage {
         }
     }
 
+    /**
+     * @author Осюшкин Денис
+     * Метод, в котором происходит поиск нужной подкатегории в подкаталоге каталога
+     * @param titleCatalogSubitem название искомой подкатегории в каталоге
+     * @param categories список веб-элементов категорий
+     * @param isClick логическая переменная, флаг, показывающий, кликнули мы подкатегорию или нет
+     */
     @Step("Ищем подкатегорию {titleCatalogSubitem} в списке подкатегорий")
     private void searchByElements(String titleCatalogSubitem, List<WebElement> categories, AtomicBoolean isClick) {
         categories.stream()
@@ -101,6 +140,11 @@ public class YaMarketMainPage {
                 );
     }
 
+    /**
+     * @author Осюшкин Денис
+     * Метод, в котором открываются скрытые элементы подкатегорий путем нажатия кнопки "Ещё"
+     * @param categories список веб-элементов категорий
+     */
     @Step("Открытие скрытых элементов подкатегорий")
     private void expandFieldsMore(List<WebElement> categories) {
         categories.stream()
@@ -112,6 +156,13 @@ public class YaMarketMainPage {
                 .forEach(webElement -> actions.moveToElement(wait.until(visibilityOf(webElement))).click().perform());
     }
 
+    /**
+     * @author Осюшкин Денис
+     * Метод, в котором происходит поиск нужной подкатегории в названиях подкатегорий
+     * @param titleCatalogSubitem название искомой подкатегории в каталоге
+     * @param categories список веб-элементов категорий
+     * @param isClick логическая переменная, флаг, показывающий, кликнули мы подкатегорию или нет
+     */
     @Step("Ищем подкатегорию {titleCatalogSubitem} в списке названий подкатегорий")
     private static void searchBySubtitle(String titleCatalogSubitem, List<WebElement> categories, AtomicBoolean isClick) {
         categories.stream()

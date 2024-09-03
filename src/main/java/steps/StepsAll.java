@@ -9,6 +9,10 @@ import java.util.Objects;
 
 import static helpers.Assertions.assertTrue;
 
+/**
+ * @author Осюшкин Денис
+ * Класс, предоставляющий методы для тестов, разбивающие тест на шаги
+ */
 public class StepsAll {
 
     private final WebDriver driver;
@@ -23,11 +27,22 @@ public class StepsAll {
         this.subtitlePage = new YaMarketSubtitlePage(driver);
     }
 
+    /**
+     * @author Осюшкин Денис
+     * Step, в котором осуществляется переход на сайт по ссылке url
+     * @param url ссылка url
+     */
     @Step("Переходим на сайт: {url}")
     public void openSite(String url) {
         driver.get(url);
     }
 
+    /**
+     * @author Осюшкин Денис
+     * Step, в котором производится проверка заголовка веб-страницы
+     * @param titleCatalogItem название искомой категории в каталоге
+     * @param titleCatalogSubitem название искомой подкатегории в каталоге
+     */
     @Step("Проверяем наличие тайтла: {titleCatalogSubitem} в результатах поиска YandexMarket")
     public void checkSearchInYMCatalog(String titleCatalogItem, String titleCatalogSubitem) {
         mainPage.chooseCatalogItem(titleCatalogItem);
@@ -36,6 +51,17 @@ public class StepsAll {
                 "Тайтл " + driver.getTitle() + " на сайте не содержит " + titleCatalogSubitem);
     }
 
+    /**
+     * @author Осюшкин Денис
+     * Step, в котором происходит проверка количества искомых товаров
+     * @param titleFiltersRange название фильтра по диапазону
+     * @param minPrice минимальная цена для ввода
+     * @param maxPrice максимальная цена для ввода
+     * @param titleFiltersCheckbox название фильтра с чекбокс
+     * @param titleSubfiltersFirst первый критерий фильтра чекбокс
+     * @param titleSubfiltersSecond второй критерий фильтра чекбокс
+     * @param countRes количество ожидаемых результатов поиска
+     */
     @Step("Выставляем фильтры и проверяем, что на первой странице поиска более {countRes} элементов товаров")
     public void checkSearchInYMSubitem(String titleFiltersRange, String minPrice, String maxPrice,
                                               String titleFiltersCheckbox, String titleSubfiltersFirst,
@@ -49,6 +75,12 @@ public class StepsAll {
                 "На первой странице менее %d элементов товаров".formatted(countRes));
     }
 
+    /**
+     * @author Осюшкин Денис
+     * Step, в котором происходит проверка фильтра с диапазоном
+     * @param minPrice минимальная цена для ввода
+     * @param maxPrice максимальная цена для ввода
+     */
     @Step("Проверяем, что все предложения соответствуют фильтрам по цене в диапазоне от {minPrice} до {maxPrice}")
     public void validatePriceFilter(String minPrice, String maxPrice) {
         subtitlePage.scrollToEndPage();
@@ -59,17 +91,26 @@ public class StepsAll {
                         .formatted(minPrice, maxPrice));
     }
 
+    /**
+     * @author Осюшкин Денис
+     * Step, в котором происходит проверка фильтра с чекбоксами
+     * @param titleSubfiltersFirst первый критерий фильтра чекбокс
+     * @param titleSubfiltersSecond второй критерий фильтра чекбокс
+     */
     @Step("Проверяем, что все предложения соответствуют фильтрам по производителям " +
             "{titleSubfiltersFirst} и {titleSubfiltersSecond}")
     public void validateTitleFilter(String titleSubfiltersFirst, String titleSubfiltersSecond) {
         assertTrue(subtitlePage.getTitleProducts().stream()
-                        .anyMatch  // TODO вернуть в allMatch!
-                                (title -> title.contains(titleSubfiltersFirst) ||
+                        .allMatch(title -> title.contains(titleSubfiltersFirst) ||
                                         title.contains(titleSubfiltersSecond)),
                 "Не все предложения соответствуют фильтрам по производителям %s и %s"
                         .formatted(titleSubfiltersFirst, titleSubfiltersSecond));
     }
 
+    /**
+     * @author Осюшкин Денис
+     * Step, в котором осуществляется проверка поиска по названию товара
+     */
     @Step("Проверяем, что в результатах поиска на первой странице есть данный производитель")
     public void validateSearchResult() {
         String firstPositionTitle = subtitlePage.getFirstPositionTitle();

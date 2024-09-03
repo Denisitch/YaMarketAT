@@ -2,37 +2,38 @@ package helpers;
 
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.*;
-import org.openqa.selenium.support.ui.FluentWait;
 
 import java.time.Duration;
-import java.util.List;
-import java.util.NoSuchElementException;
 
 import static helpers.Properties.testsProperties;
 
+/**
+ * @author Осюшкин Денис
+ * Класс пользовательских ожиданий
+ */
 public class CustomWait {
 
+    /**
+     * Установка кастомного неявного ожидания в значение, взятое из свойств
+     */
     private static int implicitlyWait = testsProperties.defaultTimeout();
 
-    private static int pageLoadTimeout = testsProperties.defaultTimeout();
-
-    private static int setScriptTimeout = testsProperties.defaultTimeout();
-
+    /**
+     * @author Осюшкин Денис
+     * Метод-обертка над дефолтным неявным ожиданием
+     * @param driver веб-драйвер
+     * @param defaultTimeout дефолтное время ожидания
+     */
     public static void implicitlyWait(WebDriver driver, int defaultTimeout) {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(defaultTimeout));
         implicitlyWait = defaultTimeout;
     }
 
-    public static void pageLoadTimeout(WebDriver driver, int defaultTimeout) {
-        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(defaultTimeout));
-        pageLoadTimeout = defaultTimeout;
-    }
-
-    public static void setScriptTimeout(WebDriver driver, int defaultTimeout) {
-        driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(defaultTimeout));
-        setScriptTimeout = defaultTimeout;
-    }
-
+    /**
+     * @author Осюшкин Денис
+     * Вспомогательный метод, останавливающий поток на одну секунду
+     * @param sec секунда
+     */
     private static void sleep(int sec) {
         try {
             Thread.sleep(sec * 1000L);
@@ -41,6 +42,15 @@ public class CustomWait {
         }
     }
 
+    /**
+     * @author Осюшкин Денис
+     * Метод ожидания для веб-элемента, который появляется при обновлении данных на странице
+     * и исчезает через неопределенное время
+     * @param driver веб-драйвер
+     * @param elementXpath селектор элемента
+     * @param timeWaitLocated время ожидания видимого элемента
+     * @param timeWaitInvisible время ожидания невидимого элемента
+     */
     public static void waitInvisibleIfLocated(WebDriver driver, String elementXpath,
                                               int timeWaitLocated, int timeWaitInvisible) {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(0));
@@ -57,18 +67,5 @@ public class CustomWait {
             sleep(testsProperties.timeSleep());
         }
         implicitlyWait(driver, implicitlyWait);
-    }
-
-    public static FluentWait<WebDriver> getFluentWait(WebDriver driver, int timeWaite, int frequency) {
-        return new FluentWait<>(driver)
-                .withTimeout(Duration.ofSeconds(timeWaite))
-                .pollingEvery(Duration.ofMillis(frequency))
-                .ignoreAll(List.of(
-                        NoSuchElementException.class,
-                        WebDriverException.class,
-                        StaleElementReferenceException.class,
-                        ElementClickInterceptedException.class,
-                        TimeoutException.class)
-                );
     }
 }
