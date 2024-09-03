@@ -31,7 +31,7 @@ public class YaMarketMainPage {
 
     public YaMarketMainPage(WebDriver driver) {
         this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
         this.actions = new Actions(driver);
     }
 

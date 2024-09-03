@@ -8,6 +8,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import steps.StepsAll;
 
 import static helpers.CustomWait.implicitlyWait;
 import static helpers.Properties.testsProperties;
@@ -15,6 +16,8 @@ import static helpers.Properties.testsProperties;
 public class BaseTest {
 
     protected WebDriver driver;
+
+    protected StepsAll steps;
 
     @BeforeEach
     public void setUp() {
@@ -24,6 +27,7 @@ public class BaseTest {
 //        FirefoxOptions driverOptions = new FirefoxOptions();
 //        driverOptions.setPageLoadStrategy(PageLoadStrategy.NORMAL);
 //        driver = new FirefoxDriver(driverOptions);
+        steps = new StepsAll(driver);
         driver.manage().window().maximize();
         implicitlyWait(driver, testsProperties.defaultTimeout());
     }

@@ -11,42 +11,48 @@ import static helpers.Assertions.assertTrue;
 
 public class StepsAll {
 
-    private static WebDriver driver;
+    private final WebDriver driver;
+
+    private final YaMarketMainPage mainPage;
+
+    private final YaMarketSubtitlePage subtitlePage;
+
+    public StepsAll(WebDriver currentDriver) {
+        this.driver = currentDriver;
+        this.mainPage = new YaMarketMainPage(driver);
+        this.subtitlePage = new YaMarketSubtitlePage(driver);
+    }
 
     @Step("Переходим на сайт: {url}")
-    public static void openSite(String url, WebDriver currentDriver) {
-        driver = currentDriver;
+    public void openSite(String url) {
         driver.get(url);
     }
 
     @Step("Проверяем наличие тайтла: {titleCatalogSubitem} в результатах поиска YandexMarket")
-    public static void checkSearchInYMCatalog(String titleCatalogItem, String titleCatalogSubitem) {
-        YaMarketMainPage yaMarketMainPage = new YaMarketMainPage(driver);
-        yaMarketMainPage.chooseCatalogItem(titleCatalogItem);
-        yaMarketMainPage.chooseCatalogSubitem(titleCatalogSubitem);
+    public void checkSearchInYMCatalog(String titleCatalogItem, String titleCatalogSubitem) {
+        mainPage.chooseCatalogItem(titleCatalogItem);
+        mainPage.chooseCatalogSubitem(titleCatalogSubitem);
         assertTrue(Objects.requireNonNull(driver.getTitle()).contains(titleCatalogSubitem),
                 "Тайтл " + driver.getTitle() + " на сайте не содержит " + titleCatalogSubitem);
     }
 
     @Step("Выставляем фильтры и проверяем, что на первой странице поиска более {countRes} элементов товаров")
-    public static void checkSearchInYMSubitem(String titleFiltersRange, String minPrice, String maxPrice,
+    public void checkSearchInYMSubitem(String titleFiltersRange, String minPrice, String maxPrice,
                                               String titleFiltersCheckbox, String titleSubfiltersFirst,
                                               String titleSubfiltersSecond, Integer countRes) {
-        YaMarketSubtitlePage yaMarketSubtitlePage = new YaMarketSubtitlePage(driver);
-        yaMarketSubtitlePage.displaySettings();
-        yaMarketSubtitlePage.searchFiltersInputRanges(titleFiltersRange, minPrice, maxPrice);
-        yaMarketSubtitlePage.searchFiltersCheckbox(titleFiltersCheckbox, titleSubfiltersFirst, titleSubfiltersSecond);
+        subtitlePage.displaySettings();
+        subtitlePage.searchFiltersInputRanges(titleFiltersRange, minPrice, maxPrice);
+        subtitlePage.searchFiltersCheckbox(titleFiltersCheckbox, titleSubfiltersFirst, titleSubfiltersSecond);
 
-        int countResultSearch = yaMarketSubtitlePage.getResultSearchFirstPage().size();
+        int countResultSearch = subtitlePage.getResultSearchFirstPage().size();
         assertTrue(countResultSearch > countRes,
                 "На первой странице менее %d элементов товаров".formatted(countRes));
     }
 
     @Step("Проверяем, что все предложения соответствуют фильтрам по цене в диапазоне от {minPrice} до {maxPrice}")
-    public static void validatePriceFilter(String minPrice, String maxPrice) {
-        YaMarketSubtitlePage yaMarketSubtitlePage = new YaMarketSubtitlePage(driver);
-        yaMarketSubtitlePage.scrollToEndPage();
-        assertTrue(yaMarketSubtitlePage.getPriceProducts().stream()
+    public void validatePriceFilter(String minPrice, String maxPrice) {
+        subtitlePage.scrollToEndPage();
+        assertTrue(subtitlePage.getPriceProducts().stream()
                         .allMatch(price -> Integer.parseInt(minPrice) <= Integer.parseInt(price) &&
                                 Integer.parseInt(maxPrice) >= Integer.parseInt(price)),
                 "Не все предложения соответствуют фильтрам по цене в диапазоне от %s до %s"
@@ -55,9 +61,8 @@ public class StepsAll {
 
     @Step("Проверяем, что все предложения соответствуют фильтрам по производителям " +
             "{titleSubfiltersFirst} и {titleSubfiltersSecond}")
-    public static void validateTitleFilter(String titleSubfiltersFirst, String titleSubfiltersSecond) {
-        YaMarketSubtitlePage yaMarketSubtitlePage = new YaMarketSubtitlePage(driver);
-        assertTrue(yaMarketSubtitlePage.getTitleProducts().stream()
+    public void validateTitleFilter(String titleSubfiltersFirst, String titleSubfiltersSecond) {
+        assertTrue(subtitlePage.getTitleProducts().stream()
                         .anyMatch  // TODO вернуть в allMatch!
                                 (title -> title.contains(titleSubfiltersFirst) ||
                                         title.contains(titleSubfiltersSecond)),
@@ -66,10 +71,9 @@ public class StepsAll {
     }
 
     @Step("Проверяем, что в результатах поиска на первой странице есть данный производитель")
-    public static void validateSearchResult() {
-        YaMarketSubtitlePage yaMarketSubtitlePage = new YaMarketSubtitlePage(driver);
-        String firstPositionTitle = yaMarketSubtitlePage.getFirstPositionTitle();
-        assertTrue(yaMarketSubtitlePage.getResultsProductTitle().contains(firstPositionTitle),
+    public void validateSearchResult() {
+        String firstPositionTitle = subtitlePage.getFirstPositionTitle();
+        assertTrue(subtitlePage.getResultsProductTitle().contains(firstPositionTitle),
                 "В результатах поиска на первой странице нет %s"
                         .formatted(firstPositionTitle));
     }
