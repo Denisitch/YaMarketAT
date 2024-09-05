@@ -19,10 +19,10 @@ public class CustomWait {
     private static int implicitlyWait = testsProperties.defaultTimeout();
 
     /**
+     * @param driver         веб-драйвер
+     * @param defaultTimeout дефолтное время ожидания
      * @author Осюшкин Денис
      * Метод-обертка над дефолтным неявным ожиданием
-     * @param driver веб-драйвер
-     * @param defaultTimeout дефолтное время ожидания
      */
     public static void implicitlyWait(WebDriver driver, int defaultTimeout) {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(defaultTimeout));
@@ -30,9 +30,9 @@ public class CustomWait {
     }
 
     /**
+     * @param sec секунда
      * @author Осюшкин Денис
      * Вспомогательный метод, останавливающий поток на одну секунду
-     * @param sec секунда
      */
     private static void sleep(int sec) {
         try {
@@ -43,13 +43,13 @@ public class CustomWait {
     }
 
     /**
+     * @param driver            веб-драйвер
+     * @param elementXpath      селектор элемента
+     * @param timeWaitLocated   время ожидания видимого элемента
+     * @param timeWaitInvisible время ожидания невидимого элемента
      * @author Осюшкин Денис
      * Метод ожидания для веб-элемента, который появляется при обновлении данных на странице
      * и исчезает через неопределенное время
-     * @param driver веб-драйвер
-     * @param elementXpath селектор элемента
-     * @param timeWaitLocated время ожидания видимого элемента
-     * @param timeWaitInvisible время ожидания невидимого элемента
      */
     public static void waitInvisibleIfLocated(WebDriver driver, String elementXpath,
                                               int timeWaitLocated, int timeWaitInvisible) {

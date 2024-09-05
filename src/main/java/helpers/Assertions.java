@@ -9,10 +9,10 @@ import io.qameta.allure.Step;
 public class Assertions {
 
     /**
+     * @param condition условие
+     * @param message   сообщение
      * @author Осюшкин Денис
      * Метод, переопределяющий assertTrue
-     * @param condition условие
-     * @param message сообщение
      */
     @Step("Проверяем что нет ошибки: {message}")
     public static void assertTrue(boolean condition, String message) {
@@ -20,9 +20,9 @@ public class Assertions {
     }
 
     /**
+     * @param message сообщение
      * @author Осюшкин Денис
      * Метод, переопределяющий fail
-     * @param message сообщение
      */
     @Step("Проверяем что нет ошибки: {message}")
     public static void fail(String message) {

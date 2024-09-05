@@ -53,9 +53,9 @@ public class YaMarketMainPage {
     }
 
     /**
+     * @param titleCatalogItem название искомой категории в каталоге
      * @author Осюшкин Денис
      * Метод, в котором происходит выбор категории из каталога
-     * @param titleCatalogItem название искомой категории в каталоге
      */
     @Step("Выбираем категорию {titleCatalogItem} в каталоге товаров")
     public void chooseCatalogItem(String titleCatalogItem) {
@@ -74,9 +74,9 @@ public class YaMarketMainPage {
     }
 
     /**
+     * @param webElement элемент, в подкаталоге которого нужно продолжать поиск
      * @author Осюшкин Денис
      * Метод, в котором происходит наведение на нужную категорию каталога
-     * @param webElement элемент, в подкаталоге которого нужно продолжать поиск
      */
     @Step("Наводим курсор на категорию")
     private void correctCursorHover(WebElement webElement) {
@@ -94,9 +94,9 @@ public class YaMarketMainPage {
     }
 
     /**
+     * @param titleCatalogSubitem название искомой подкатегории в каталоге
      * @author Осюшкин Денис
      * Метод, в котором собрана логика поиска искомого раздела в подкаталоге
-     * @param titleCatalogSubitem название искомой подкатегории в каталоге
      */
     @Step("Выбираем подкатегорию {titleCatalogSubitem} в каталоге товаров")
     public void chooseCatalogSubitem(String titleCatalogSubitem) {
@@ -118,11 +118,11 @@ public class YaMarketMainPage {
     }
 
     /**
+     * @param titleCatalogSubitem название искомой подкатегории в каталоге
+     * @param categories          список веб-элементов категорий
+     * @param isClick             логическая переменная, флаг, показывающий, кликнули мы подкатегорию или нет
      * @author Осюшкин Денис
      * Метод, в котором происходит поиск нужной подкатегории в подкаталоге каталога
-     * @param titleCatalogSubitem название искомой подкатегории в каталоге
-     * @param categories список веб-элементов категорий
-     * @param isClick логическая переменная, флаг, показывающий, кликнули мы подкатегорию или нет
      */
     @Step("Ищем подкатегорию {titleCatalogSubitem} в списке подкатегорий")
     private void searchByElements(String titleCatalogSubitem, List<WebElement> categories, AtomicBoolean isClick) {
@@ -141,9 +141,9 @@ public class YaMarketMainPage {
     }
 
     /**
+     * @param categories список веб-элементов категорий
      * @author Осюшкин Денис
      * Метод, в котором открываются скрытые элементы подкатегорий путем нажатия кнопки "Ещё"
-     * @param categories список веб-элементов категорий
      */
     @Step("Открытие скрытых элементов подкатегорий")
     private void expandFieldsMore(List<WebElement> categories) {
@@ -157,11 +157,11 @@ public class YaMarketMainPage {
     }
 
     /**
+     * @param titleCatalogSubitem название искомой подкатегории в каталоге
+     * @param categories          список веб-элементов категорий
+     * @param isClick             логическая переменная, флаг, показывающий, кликнули мы подкатегорию или нет
      * @author Осюшкин Денис
      * Метод, в котором происходит поиск нужной подкатегории в названиях подкатегорий
-     * @param titleCatalogSubitem название искомой подкатегории в каталоге
-     * @param categories список веб-элементов категорий
-     * @param isClick логическая переменная, флаг, показывающий, кликнули мы подкатегорию или нет
      */
     @Step("Ищем подкатегорию {titleCatalogSubitem} в списке названий подкатегорий")
     private static void searchBySubtitle(String titleCatalogSubitem, List<WebElement> categories, AtomicBoolean isClick) {

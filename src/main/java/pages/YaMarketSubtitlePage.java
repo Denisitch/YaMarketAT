@@ -87,9 +87,9 @@ public class YaMarketSubtitlePage {
     }
 
     /**
+     * @return List<String>
      * @author Осюшкин Денис
      * Метод, возвращающий список названий товаров с первой страницы
-     * @return List<String>
      */
     @Step("Получаем список названий товаров с первой страницы по результатам поиска")
     public List<String> getResultSearchFirstPage() {
@@ -101,9 +101,9 @@ public class YaMarketSubtitlePage {
     }
 
     /**
+     * @return List<String>
      * @author Осюшкин Денис
      * Метод, возвращающий список с ценами продуктов
-     * @return List<String>
      */
     @Step("Получаем список с ценами всех продуктов")
     public List<String> getPriceProducts() {
@@ -115,9 +115,9 @@ public class YaMarketSubtitlePage {
     }
 
     /**
+     * @return List<String>
      * @author Осюшкин Денис
      * Метод, возвращающий список с названиями продуктов
-     * @return List<String>
      */
     @Step("Получаем список с названиями всех продуктов")
     public List<String> getTitleProducts() {
@@ -129,9 +129,9 @@ public class YaMarketSubtitlePage {
     }
 
     /**
+     * @return List<String>
      * @author Осюшкин Денис
      * Метод, возвращающий список с названиями продуктов при поиске по запомненному значению
-     * @return List<String>
      */
     @Step("Получаем названия товаров с первой страницы результатов поиска")
     public List<String> getResultsProductTitle() {
@@ -141,9 +141,9 @@ public class YaMarketSubtitlePage {
     }
 
     /**
+     * @param firstPositionTitle название первого с текущей страницы товара
      * @author Осюшкин Денис
      * Метод, отвечающий за введение в посковое поле и нажатие кнопки "Найти"
-     * @param firstPositionTitle название первого с текущей страницы товара
      */
     @Step("Вводим в поисковое поле название первого с текущей страницы товара: {firstPositionTitle}")
     private void inputSearchTitle(String firstPositionTitle) {
@@ -154,9 +154,9 @@ public class YaMarketSubtitlePage {
     }
 
     /**
+     * @return String
      * @author Осюшкин Денис
      * Метод, который получает название первого товара по результатам поиска
-     * @return String
      */
     @Step("Получаем название первого товара по результатам поиска")
     public String getFirstPositionTitle() {
@@ -179,10 +179,10 @@ public class YaMarketSubtitlePage {
     }
 
     /**
+     * @param titleFilters    название фильтра
+     * @param titleSubfilters критерий фильтра
      * @author Осюшкин Денис
      * Метод, фильтрующий чекбокс по названию фильтра
-     * @param titleFilters название фильтра
-     * @param titleSubfilters критерий фильтра
      */
     @Step("Выставляем фильтр {titleFilters} по критерию: {titleSubfilters}")
     private void searchFiltersCheckbox(String titleFilters, String titleSubfilters) {
@@ -202,11 +202,11 @@ public class YaMarketSubtitlePage {
     }
 
     /**
+     * @param titleFilters    название фильтра
+     * @param titleSubfilters критерии фильтра
      * @author Осюшкин Денис
      * Метод, фильтрующий чекбокс по названию фильтра с множественными критериями
      * Перегруженный метод searchFiltersCheckbox(String titleFilters, String titleSubfilters)
-     * @param titleFilters название фильтра
-     * @param titleSubfilters критерии фильтра
      */
     @Step("Выставляем фильтр {titleFilters} по критериям: {titleSubfilters}")
     public void searchFiltersCheckbox(String titleFilters, String... titleSubfilters) {
@@ -214,10 +214,10 @@ public class YaMarketSubtitlePage {
     }
 
     /**
+     * @param titleFilters название фильтра
+     * @param input        диапазон фильтра
      * @author Осюшкин Денис
      * Метод, фильтрующий по диапазону
-     * @param titleFilters название фильтра
-     * @param input диапазон фильтра
      */
     @Step("Выставляем фильтр {titleFilters} в диапазоне: {input}")
     public void searchFiltersInputRanges(String titleFilters, String... input) {

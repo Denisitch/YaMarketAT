@@ -28,9 +28,9 @@ public class StepsAll {
     }
 
     /**
+     * @param url ссылка url
      * @author Осюшкин Денис
      * Step, в котором осуществляется переход на сайт по ссылке url
-     * @param url ссылка url
      */
     @Step("Переходим на сайт: {url}")
     public void openSite(String url) {
@@ -38,10 +38,10 @@ public class StepsAll {
     }
 
     /**
+     * @param titleCatalogItem    название искомой категории в каталоге
+     * @param titleCatalogSubitem название искомой подкатегории в каталоге
      * @author Осюшкин Денис
      * Step, в котором производится проверка заголовка веб-страницы
-     * @param titleCatalogItem название искомой категории в каталоге
-     * @param titleCatalogSubitem название искомой подкатегории в каталоге
      */
     @Step("Проверяем наличие тайтла: {titleCatalogSubitem} в результатах поиска YandexMarket")
     public void checkSearchInYMCatalog(String titleCatalogItem, String titleCatalogSubitem) {
@@ -52,20 +52,20 @@ public class StepsAll {
     }
 
     /**
+     * @param titleFiltersRange     название фильтра по диапазону
+     * @param minPrice              минимальная цена для ввода
+     * @param maxPrice              максимальная цена для ввода
+     * @param titleFiltersCheckbox  название фильтра с чекбокс
+     * @param titleSubfiltersFirst  первый критерий фильтра чекбокс
+     * @param titleSubfiltersSecond второй критерий фильтра чекбокс
+     * @param countRes              количество ожидаемых результатов поиска
      * @author Осюшкин Денис
      * Step, в котором происходит проверка количества искомых товаров
-     * @param titleFiltersRange название фильтра по диапазону
-     * @param minPrice минимальная цена для ввода
-     * @param maxPrice максимальная цена для ввода
-     * @param titleFiltersCheckbox название фильтра с чекбокс
-     * @param titleSubfiltersFirst первый критерий фильтра чекбокс
-     * @param titleSubfiltersSecond второй критерий фильтра чекбокс
-     * @param countRes количество ожидаемых результатов поиска
      */
     @Step("Выставляем фильтры и проверяем, что на первой странице поиска более {countRes} элементов товаров")
     public void checkSearchInYMSubitem(String titleFiltersRange, String minPrice, String maxPrice,
-                                              String titleFiltersCheckbox, String titleSubfiltersFirst,
-                                              String titleSubfiltersSecond, Integer countRes) {
+                                       String titleFiltersCheckbox, String titleSubfiltersFirst,
+                                       String titleSubfiltersSecond, Integer countRes) {
         subtitlePage.displaySettings();
         subtitlePage.searchFiltersInputRanges(titleFiltersRange, minPrice, maxPrice);
         subtitlePage.searchFiltersCheckbox(titleFiltersCheckbox, titleSubfiltersFirst, titleSubfiltersSecond);
@@ -76,10 +76,10 @@ public class StepsAll {
     }
 
     /**
-     * @author Осюшкин Денис
-     * Step, в котором происходит проверка фильтра с диапазоном
      * @param minPrice минимальная цена для ввода
      * @param maxPrice максимальная цена для ввода
+     * @author Осюшкин Денис
+     * Step, в котором происходит проверка фильтра с диапазоном
      */
     @Step("Проверяем, что все предложения соответствуют фильтрам по цене в диапазоне от {minPrice} до {maxPrice}")
     public void validatePriceFilter(String minPrice, String maxPrice) {
@@ -92,17 +92,17 @@ public class StepsAll {
     }
 
     /**
+     * @param titleSubfiltersFirst  первый критерий фильтра чекбокс
+     * @param titleSubfiltersSecond второй критерий фильтра чекбокс
      * @author Осюшкин Денис
      * Step, в котором происходит проверка фильтра с чекбоксами
-     * @param titleSubfiltersFirst первый критерий фильтра чекбокс
-     * @param titleSubfiltersSecond второй критерий фильтра чекбокс
      */
     @Step("Проверяем, что все предложения соответствуют фильтрам по производителям " +
             "{titleSubfiltersFirst} и {titleSubfiltersSecond}")
     public void validateTitleFilter(String titleSubfiltersFirst, String titleSubfiltersSecond) {
         assertTrue(subtitlePage.getTitleProducts().stream()
                         .allMatch(title -> title.contains(titleSubfiltersFirst) ||
-                                        title.contains(titleSubfiltersSecond)),
+                                title.contains(titleSubfiltersSecond)),
                 "Не все предложения соответствуют фильтрам по производителям %s и %s"
                         .formatted(titleSubfiltersFirst, titleSubfiltersSecond));
     }
